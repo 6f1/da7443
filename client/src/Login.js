@@ -135,7 +135,7 @@ const Login = (props) => {
       <Grid item className={classes.rightPane}>
         <Grid container item justifyContent="flex-end" alignItems="center" className={classes.rightPaneHeader}>
           <p className={classes.rightPaneHeaderText}>Don't have an account?</p>
-          <Button onClick={() => history.push("/register")} variant="contained" size="large" className={classes.rightPaneHeaderBtn}>Create Account</Button>
+          <Button onClick={() => history.push("/register")} variant="contained" size="large" className={classes.rightPaneHeaderBtn}>Create account</Button>
         </Grid>
         <Grid container item className={classes.rightPaneMain}>
           <form onSubmit={handleLogin} className={classes.rightPaneForm}>
