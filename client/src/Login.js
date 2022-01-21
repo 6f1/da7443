@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import {
@@ -6,10 +6,11 @@ import {
   Box,
   Button,
   FormControl,
-  TextField
+  TextField,
+  FormHelperText
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { login } from "./store/utils/thunkCreators";
+import { login, register } from "./store/utils/thunkCreators";
 
 const useStyles = makeStyles((theme) => ({
   parentGrid: {
@@ -73,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
   },
   rightPaneHeaderBtn: {
      marginLeft: '2rem',
-     height: '5rem',
+     height: '4rem',
      color: theme.palette.neutral.contrastText,
      backgroundColor: theme.palette.neutral.main,
      padding: '0 3rem'
@@ -94,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: theme.typography.fontFamily
   },
   formSubmitBtn: {
-    height: '5rem',
+    height: '4rem',
     marginTop: '3rem',
     padding: '0 3rem'
   },
@@ -103,10 +104,26 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Login = (props) => {
+const Form = (props) => {
   const history = useHistory();
-  const { user, login } = props;
+  const { user, login, register, type } = props;
+  const [formErrorMessage, setFormErrorMessage] = useState({});
   const classes = useStyles();
+
+  const handleRegister = async (event) => {
+    event.preventDefault();
+    const username = event.target.username.value;
+    const email = event.target.email.value;
+    const password = event.target.password.value;
+    const confirmPassword = event.target.confirmPassword.value;
+
+    if (password !== confirmPassword) {
+      setFormErrorMessage({ confirmPassword: "Passwords must match" });
+      return;
+    }
+
+    await register({ username, email, password });
+  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -134,33 +151,87 @@ const Login = (props) => {
       </Grid>
       <Grid item className={classes.rightPane}>
         <Grid container item justifyContent="flex-end" alignItems="center" className={classes.rightPaneHeader}>
-          <p className={classes.rightPaneHeaderText}>Don't have an account?</p>
-          <Button onClick={() => history.push("/register")} variant="contained" size="large" className={classes.rightPaneHeaderBtn}>Create account</Button>
+          <p className={classes.rightPaneHeaderText}>
+            {type === "login" ? "Don't have an account?" : "Already have an account?"}
+          </p>
+          <Button onClick={() => history.push(type === "login" ? "/register" : "/login")} variant="contained" size="large" className={classes.rightPaneHeaderBtn}>{type === "login" ? "Create account" : "Login"}</Button>
         </Grid>
         <Grid container item className={classes.rightPaneMain}>
-          <form onSubmit={handleLogin} className={classes.rightPaneForm}>
+          <form onSubmit={type === 'login' ? handleLogin : handleRegister} className={classes.rightPaneForm}>
             <Grid container md={true} alignItems="center" justifyContent="center" className={classes.maxHeight}>
               <Grid container alignItems="center" justifyContent="center" direction="column" item md={6}>
-                <h1 className={classes.formText}>Welcome back!</h1>
-                <FormControl margin="normal" required fullWidth={true}>
-                  <TextField
-                    label="Username"
-                    aria-label="username"
-                    name="username"
-                    type="text"
-                  />
-                </FormControl>
-                <FormControl margin="normal" required fullWidth={true}>
-                  <TextField
-                    label="Password"
-                    aria-label="password"
-                    type="password"
-                    name="password"
-                  />
-                </FormControl>
+                <h1 className={classes.formText}>{type === "login" ? "Welcome back!" : "Create an account"}</h1>
+                {type === "login" && (
+                  <>
+                    <FormControl margin="normal" required fullWidth={true}>
+                      <TextField
+                        label="Username"
+                        aria-label="username"
+                        name="username"
+                        type="text"
+                      />
+                    </FormControl>
+                    <FormControl margin="normal" required fullWidth={true}>
+                      <TextField
+                        label="Password"
+                        aria-label="password"
+                        type="password"
+                        name="password"
+                      />
+                    </FormControl>
+                  </>
+                )}
+                {type === "register" && (
+                  <>
+                    <FormControl margin="normal" fullWidth={true}>
+                      <TextField
+                        aria-label="username"
+                        label="Username"
+                        name="username"
+                        type="text"
+                        required
+                      />
+                    </FormControl>
+                    <FormControl margin="normal" fullWidth={true}>
+                      <TextField
+                        label="E-mail address"
+                        aria-label="e-mail address"
+                        type="email"
+                        name="email"
+                        required
+                      />
+                    </FormControl>
+                    <FormControl error={!!formErrorMessage.confirmPassword}  margin="normal" fullWidth={true}>
+                      <TextField
+                        aria-label="password"
+                        label="Password"
+                        type="password"
+                        inputProps={{ minLength: 6 }}
+                        name="password"
+                        required
+                      />
+                      <FormHelperText>
+                        {formErrorMessage.confirmPassword}
+                      </FormHelperText>
+                    </FormControl>
+                    <FormControl error={!!formErrorMessage.confirmPassword} fullWidth={true}>
+                      <TextField
+                        label="Confirm Password"
+                        aria-label="confirm password"
+                        type="password"
+                        inputProps={{ minLength: 6 }}
+                        name="confirmPassword"
+                        required
+                      />
+                      <FormHelperText>
+                        {formErrorMessage.confirmPassword}
+                      </FormHelperText>
+                    </FormControl>
+                  </>
+                )}
                 <Grid container md={4}>
                   <Button type="submit" variant="contained" size="large" fullWidth={true} color="primary" className={classes.formSubmitBtn}>
-                    Login
+                    {type === "login" ? "Login" : "Create"}
                   </Button>
                 </Grid>
               </Grid>
@@ -170,7 +241,7 @@ const Login = (props) => {
       </Grid>
     </Grid>
   );
-};
+}
 
 const mapStateToProps = (state) => {
   return {
@@ -183,7 +254,10 @@ const mapDispatchToProps = (dispatch) => {
     login: (credentials) => {
       dispatch(login(credentials));
     },
+    register: (credentials) => {
+      dispatch(register(credentials));
+    },
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Form);
