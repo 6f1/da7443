@@ -7,6 +7,7 @@ import {
   Button,
   FormControl,
   TextField,
+  Typography,
   FormHelperText
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -58,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
   },
   rightPane: {
     width: '58%',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('xs')]: {
       width: '100%'
     }
   },
@@ -92,7 +93,8 @@ const useStyles = makeStyles((theme) => ({
   formText: {
     width: '100%',
     textAlign: 'left',
-    fontFamily: theme.typography.fontFamily
+    fontFamily: theme.typography.fontFamily,
+    fontWeight: 600
   },
   formSubmitBtn: {
     height: '4rem',
@@ -138,29 +140,29 @@ const Form = (props) => {
   }
 
   return (
-    <Grid container justify="center" className={classes.parentGrid}>
+    <Grid container justifyContent="center" className={classes.parentGrid}>
       <Grid item className={classes.leftPane}>
         <Box className={classes.leftPaneBgBox}>
-          <img src={"/assets/bg-img.png"} className={classes.leftPaneBgImg} alt=""/>
+          <img src={"/assets/bg-img.png"} className={classes.leftPaneBgImg} alt="Messenger people"/>
         </Box>
         <Box className={classes.leftPaneBgFilter}/>
         <Grid container alignItems="center" justifyContent="center" direction="column" className={classes.leftPaneOverlay}>
           <object data={"/assets/bubble.svg"} type="image/svg+xml" aria-label="messanger-bubble"/>
-          <h1 className={classes.leftPaneOverlayText}>{"Converse with anyone with any language"}</h1>
+          <Typography className={classes.leftPaneOverlayText} variant="h5">{"Converse with anyone with any language"}</Typography>
         </Grid>
       </Grid>
       <Grid item className={classes.rightPane}>
         <Grid container item justifyContent="flex-end" alignItems="center" className={classes.rightPaneHeader}>
-          <p className={classes.rightPaneHeaderText}>
+          <Typography className={classes.rightPaneHeaderText}>
             {type === "login" ? "Don't have an account?" : "Already have an account?"}
-          </p>
+          </Typography>
           <Button onClick={() => history.push(type === "login" ? "/register" : "/login")} variant="contained" size="large" className={classes.rightPaneHeaderBtn}>{type === "login" ? "Create account" : "Login"}</Button>
         </Grid>
         <Grid container item className={classes.rightPaneMain}>
           <form onSubmit={type === 'login' ? handleLogin : handleRegister} className={classes.rightPaneForm}>
             <Grid container md={true} alignItems="center" justifyContent="center" className={classes.maxHeight}>
               <Grid container alignItems="center" justifyContent="center" direction="column" item md={6}>
-                <h1 className={classes.formText}>{type === "login" ? "Welcome back!" : "Create an account"}</h1>
+                <Typography className={classes.formText} variant="h5">{type === "login" ? "Welcome back!" : "Create an account"}</Typography>
                 {type === "login" && (
                   <>
                     <FormControl margin="normal" required fullWidth={true}>
@@ -241,7 +243,7 @@ const Form = (props) => {
       </Grid>
     </Grid>
   );
-}
+};
 
 const mapStateToProps = (state) => {
   return {
