@@ -100,6 +100,7 @@ const Input = (props) => {
           style={{ display: 'none' }}
           ref={fileInputRef}
           onChange={(e) => setAttachments([...attachments, ...e.target.files])}
+          multiple={true}
         />
       </FormControl>
     </form>
