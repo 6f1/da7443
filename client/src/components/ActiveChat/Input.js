@@ -3,6 +3,7 @@ import { FormControl, FilledInput, Chip } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { postMessage } from "../../store/utils/thunkCreators";
+import axios from 'axios';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 
 const useStyles = makeStyles((theme) => ({
@@ -41,12 +42,10 @@ const Input = (props) => {
     formData.append('api_key', apiKey);
     formData.append('upload_preset', preset);
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${preset}/image/upload`, {
-        method: 'POST',
-        body: formData
-      });
-      const { secure_url } = await res.json();
-      return secure_url;
+      const a = axios.create();
+      delete a.defaults.headers.common['x-access-token'];
+      const { data } = await a.post(`https://api.cloudinary.com/v1_1/${preset}/image/upload`, formData);
+      return data.secure_url;
     } catch (error) {
       console.error(error);
     }
@@ -59,10 +58,8 @@ const Input = (props) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // upload to cloudinary
     let links = [];
     for (const file of attachments) {
-      // get cloudinary links here
       const newLink = await getCloudinaryUrl(file);
       links.push(newLink);
     }

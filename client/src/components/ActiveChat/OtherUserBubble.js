@@ -62,18 +62,18 @@ const OtherUserBubble = (props) => {
           {otherUser.username} {time}
         </Typography>
         <Box className={classes.otherUserContent}>
-          <Grid container direction="row" justifyContent="flex-start">
-            {attachments && attachments.length > 0 && attachments.map((att, index) => (
-              <Box className={attachments.length > 1 ? classes.imgBubbles : classes.imgBubble}>
-                <img src={att} className={classes.recieverImg} alt={`${otherUser.username}'s image`}/>
-              </Box>
-            ))}
-          </Grid>
           {text && (
             <Box className={classes.bubble}>
               <Typography className={classes.text}>{text}</Typography>
             </Box>
           )}
+          <Grid container direction="row" justifyContent="flex-start">
+            {attachments?.length > 0 && attachments.map((att, index) => (
+              <Box className={attachments.length > 1 ? classes.imgBubbles : classes.imgBubble}>
+                <img src={att} className={classes.recieverImg} alt={`${otherUser.username}'s image`}/>
+              </Box>
+            ))}
+          </Grid>
         </Box>
       </Box>
     </Box>

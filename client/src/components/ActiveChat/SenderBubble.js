@@ -54,6 +54,11 @@ const SenderBubble = (props) => {
     <Box className={classes.root}>
       <Typography className={classes.date}>{time}</Typography>
       <Box className={classes.senderUserContent}>
+        {text && (
+          <Box className={classes.bubble}>
+            <Typography className={classes.text}>{text}</Typography>
+          </Box>
+        )}
         <Grid container direction="row" justifyContent="flex-end">
           {attachments && attachments.length > 0 && attachments.map((att, index) => (
             <Box className={attachments.length > 1 ? classes.imgBubbles : classes.imgBubble}>
@@ -61,11 +66,6 @@ const SenderBubble = (props) => {
             </Box>
           ))}
         </Grid>
-        {text && (
-          <Box className={classes.bubble}>
-            <Typography className={classes.text}>{text}</Typography>
-          </Box>
-        )}
       </Box>
     </Box>
   );
