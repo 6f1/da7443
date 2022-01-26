@@ -37,7 +37,7 @@ const Input = (props) => {
   const { postMessage, otherUser, conversationId, user } = props;
 
   const getCloudinaryUrl = async (file) => {
-    const apiKey = '256692893972532', preset = 'gs64sqvm', formData = new FormData();
+    const formData = new FormData(), apiKey = process.env.REACT_APP_CLOUDINARY_API_KEY, preset = process.env.REACT_APP_CLOUDINARY_PRESET;
     formData.append('file', file);
     formData.append('api_key', apiKey);
     formData.append('upload_preset', preset);
